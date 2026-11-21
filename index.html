@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Physical-Edge Native</title>
+<meta name="description" content="Physical-Edge Native Architecture (PENA): small computers placed in a real space compute its physics together.">
+<style>
+:root{--bg:#fafaf7;--fg:#1d1d1b;--muted:#5b5b57;--line:#e2e1db;--card:#ffffff;--accent:#1f6f8b}
+@media (prefers-color-scheme:dark){:root{--bg:#141413;--fg:#ecebe6;--muted:#a3a29c;--line:#2d2d2a;--card:#1c1c1a;--accent:#6cb6cf}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:17px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif}
+header,main,footer{max-width:1040px;margin:0 auto;padding:0 16px}
+header{display:flex;justify-content:space-between;align-items:center;padding-top:20px;padding-bottom:20px;border-bottom:1px solid var(--line)}
+header b{letter-spacing:.02em}
+nav a{margin-left:18px}
+a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
+.hero{padding:56px 0 32px}
+.hero h1{font-size:clamp(30px,5vw,46px);line-height:1.15;margin:0 0 16px;max-width:20ch}
+.hero p{color:var(--muted);max-width:62ch;font-size:19px;margin:0}
+.btns{margin-top:24px;display:flex;gap:12px;flex-wrap:wrap}
+.btn{display:inline-block;padding:10px 18px;border-radius:6px;border:1px solid var(--accent)}
+.btn.primary{background:var(--accent);color:var(--bg)}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:24px 0 8px}
+.pair img,.wide img{width:100%;border-radius:6px;border:1px solid var(--line);display:block}
+.cap{color:var(--muted);font-size:14px;margin:6px 0 0}
+h2{font-size:26px;margin:56px 0 12px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:18px}
+.card h3{margin:0 0 6px;font-size:18px}.card p{margin:0;color:var(--muted);font-size:15px}
+.wide{margin-top:16px}
+footer{border-top:1px solid var(--line);margin-top:64px;padding-top:20px;padding-bottom:40px;color:var(--muted);font-size:14px}
+@media (max-width:720px){.pair,.grid{grid-template-columns:1fr}nav a{margin-left:12px}}
+</style>
+</head>
+<body>
+<header>
+  <b>Physical-Edge Native</b>
+  <nav><a href="#idea">Idea</a><a href="#projects">Projects</a><a href="https://github.com/physical-edge-native">GitHub</a></nav>
+</header>
+<main>
+  <section class="hero">
+    <h1>Small computers in a room, computing its physics together.</h1>
+    <p>Physical-Edge Native Architecture (PENA) is an approach for a time when many small computers sit inside
+    physical spaces. Each one senses and computes its own part of the space and talks only with its neighbours;
+    together they keep a live model of the space. A larger computer joins only when a longer forecast is needed.</p>
+    <div class="btns">
+      <a class="btn primary" href="https://physical-edge-native.github.io/dyne/">Dyne documentation</a>
+      <a class="btn" href="https://github.com/physical-edge-native/dyne">Source on GitHub</a>
+    </div>
+    <div class="pair">
+      <div><img src="img/real.jpg" alt="A 4.0 m by 2.6 m room with six small devices along the walls"><p class="cap">A real room with six devices (hardware run, 2026-11-21).</p></div>
+      <div><img src="img/twin.jpg" alt="The room shape computed by the six devices, shown in a 3D dashboard"><p class="cap">The room shape the devices computed. The floor colour is a dummy temperature field.</p></div>
+    </div>
+  </section>
+
+  <section id="idea">
+    <h2>The idea</h2>
+    <div class="grid">
+      <div class="card"><h3>Split the space</h3><p>Each device owns one part of the space and exchanges only the values on the shared edges with its neighbours.</p></div>
+      <div class="card"><h3>Check it bit for bit</h3><p>A split computation must match the same model solved on one computer exactly. This is how every result is tested.</p></div>
+      <div class="card"><h3>Hand it to other tools</h3><p>The live model is exported to robot simulators (USD for Isaac Sim) and to detailed solvers (ParaView, OpenFOAM).</p></div>
+    </div>
+    <div class="wide"><img src="img/go2.jpg" alt="A quadruped robot walking in the room exported from the devices, in Isaac Sim"><p class="cap">The room computed by the devices, exported as USD: a Unitree Go2 walks in it in Isaac Sim (pretrained policy).</p></div>
+  </section>
+
+  <section id="projects">
+    <h2>Projects</h2>
+    <div class="grid">
+      <div class="card"><h3><a href="https://github.com/physical-edge-native/dyne">Dyne</a></h3><p>Runs numerical solvers and small neural networks split over microcontrollers, with a deterministic simulator so everything can be tried without hardware. MIT OR Apache-2.0.</p></div>
+    </div>
+  </section>
+</main>
+<footer>Physical-Edge Native · Content under the licences of each project · Cite Dyne with DOI <a href="https://doi.org/10.5281/zenodo.24241009">10.5281/zenodo.24241009</a></footer>
+</body>
+</html>
