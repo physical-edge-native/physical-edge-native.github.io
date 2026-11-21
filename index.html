@@ -4,73 +4,251 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Physical-Edge Native</title>
-<meta name="description" content="Physical-Edge Native Architecture (PENA): small computers placed in a real space compute its physics together.">
+<meta name="description" content="Physical-Edge Native Architecture (PENA): making a physical space computable by the many small devices already in it. Assumptions, principles, limits and current stage.">
 <style>
-:root{--bg:#fafaf7;--fg:#1d1d1b;--muted:#5b5b57;--line:#e2e1db;--card:#ffffff;--accent:#1f6f8b}
-@media (prefers-color-scheme:dark){:root{--bg:#141413;--fg:#ecebe6;--muted:#a3a29c;--line:#2d2d2a;--card:#1c1c1a;--accent:#6cb6cf}}
+:root{--bg:#fafaf7;--fg:#1d1d1b;--muted:#5b5b57;--line:#e2e1db;--card:#ffffff;--accent:#1f6f8b;--soft:#e9f1f4;--warn:#8a5a14;--warnbg:#fbf3e4;--ok:#256b45;--okbg:#e8f3ec}
+@media (prefers-color-scheme:dark){:root{--bg:#141413;--fg:#ecebe6;--muted:#a3a29c;--line:#2d2d2a;--card:#1c1c1a;--accent:#6cb6cf;--soft:#1d2a2f;--warn:#e0b46a;--warnbg:#2a2418;--ok:#7fc79d;--okbg:#18261e}}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--fg);font:17px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif}
+html{scroll-behavior:smooth;scroll-padding-top:72px}
+body{margin:0;background:var(--bg);color:var(--fg);font:17px/1.65 system-ui,-apple-system,"Segoe UI",sans-serif}
 header,main,footer{max-width:1040px;margin:0 auto;padding:0 16px}
-header{display:flex;justify-content:space-between;align-items:center;padding-top:20px;padding-bottom:20px;border-bottom:1px solid var(--line)}
-header b{letter-spacing:.02em}
-nav a{margin-left:18px}
+.top{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+header{display:flex;justify-content:space-between;align-items:center;gap:16px;padding-top:14px;padding-bottom:14px}
+header b{letter-spacing:.02em;white-space:nowrap}
+nav{display:flex;flex-wrap:wrap;gap:4px 16px;justify-content:flex-end;font-size:15px}
 a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
-.hero{padding:56px 0 32px}
-.hero h1{font-size:clamp(30px,5vw,46px);line-height:1.15;margin:0 0 16px;max-width:20ch}
-.hero p{color:var(--muted);max-width:62ch;font-size:19px;margin:0}
+.hero{padding:56px 0 24px}
+.eyebrow{color:var(--accent);font-weight:600;letter-spacing:.04em;font-size:14px;text-transform:uppercase;margin:0 0 10px}
+.hero h1{font-size:clamp(30px,5vw,46px);line-height:1.15;margin:0 0 16px;max-width:22ch}
+.lead{color:var(--muted);max-width:66ch;font-size:19px;margin:0}
 .btns{margin-top:24px;display:flex;gap:12px;flex-wrap:wrap}
 .btn{display:inline-block;padding:10px 18px;border-radius:6px;border:1px solid var(--accent)}
 .btn.primary{background:var(--accent);color:var(--bg)}
-.pair{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:24px 0 8px}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:28px 0 8px}
 .pair img,.wide img{width:100%;border-radius:6px;border:1px solid var(--line);display:block}
+.pair img{height:300px;object-fit:cover}
 .cap{color:var(--muted);font-size:14px;margin:6px 0 0}
-h2{font-size:26px;margin:56px 0 12px}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:18px}
-.card h3{margin:0 0 6px;font-size:18px}.card p{margin:0;color:var(--muted);font-size:15px}
-.wide{margin-top:16px}
-footer{border-top:1px solid var(--line);margin-top:64px;padding-top:20px;padding-bottom:40px;color:var(--muted);font-size:14px}
-@media (max-width:720px){.pair,.grid{grid-template-columns:1fr}nav a{margin-left:12px}}
+section{padding-top:8px}
+h2{font-size:28px;margin:64px 0 8px;line-height:1.25}
+h2 .num{color:var(--accent);font-size:16px;display:block;font-weight:600;letter-spacing:.05em;margin-bottom:4px}
+h3{font-size:19px;margin:28px 0 8px}
+.intro{color:var(--muted);max-width:70ch;margin:0 0 20px}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.grid.three{grid-template-columns:repeat(3,1fr)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:18px 20px}
+.card h3{margin:0 0 6px;font-size:18px}
+.card p{margin:0;color:var(--muted);font-size:15.5px}
+.card .n{display:inline-block;min-width:26px;height:26px;border-radius:13px;background:var(--soft);color:var(--accent);font-weight:700;font-size:14px;text-align:center;line-height:26px;margin-right:8px}
+.flow{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:stretch;margin:16px 0}
+.cols2{columns:2;column-gap:36px}.cols2 li{break-inside:avoid}
+.flow .arrow{align-self:center;color:var(--accent);font-size:24px}
+.flow .card h3{font-size:16px;color:var(--accent);text-transform:uppercase;letter-spacing:.04em}
+.question{background:var(--soft);border-left:4px solid var(--accent);border-radius:6px;padding:16px 20px;margin:16px 0;font-size:18px}
+ol.clean,ul.clean{padding-left:22px;margin:8px 0}
+ol.clean li,ul.clean li{margin:6px 0}
+.limit{border-left:4px solid var(--warn);background:var(--warnbg)}
+.limit h3{color:var(--warn)}
+table{width:100%;border-collapse:collapse;font-size:15.5px;margin:12px 0}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--muted);font-weight:600;font-size:14px}
+.tag{display:inline-block;font-size:12.5px;font-weight:600;padding:2px 8px;border-radius:10px;white-space:nowrap}
+.tag.hw{background:var(--okbg);color:var(--ok)}
+.tag.sim{background:var(--soft);color:var(--accent)}
+.tag.next{background:var(--warnbg);color:var(--warn)}
+.tablewrap{overflow-x:auto}
+.timeline{list-style:none;padding:0;margin:12px 0;border-left:2px solid var(--line)}
+.timeline li{position:relative;padding:4px 0 14px 22px}
+.timeline li::before{content:"";position:absolute;left:-7px;top:11px;width:12px;height:12px;border-radius:6px;background:var(--accent)}
+.timeline li.future::before{background:var(--bg);border:2px solid var(--accent);width:8px;height:8px}
+.timeline b{display:inline-block;min-width:92px}
+svg.diagram{width:100%;height:auto;display:block}
+.diagram .region{fill:var(--soft);stroke:var(--line)}
+.diagram .dev{fill:#1baf7a}
+.diagram .devt{fill:#fff;font-size:13px;font-weight:600}
+.diagram .sensor{fill:#2a78d6}
+.diagram .link{stroke:#eb6834;stroke-width:3}
+.diagram .lab{fill:var(--fg);font-size:14px}
+.diagram .muted{fill:var(--muted);font-size:13px}
+.diagram .pc{fill:none;stroke:var(--muted);stroke-dasharray:6 5}
+footer{border-top:1px solid var(--line);margin-top:72px;padding-top:20px;padding-bottom:40px;color:var(--muted);font-size:14px}
+@media (max-width:760px){.cols2{columns:1}.pair,.grid,.grid.three{grid-template-columns:1fr}.flow{grid-template-columns:1fr}.flow .arrow{transform:rotate(90deg);justify-self:center}nav{display:none}}
 </style>
 </head>
 <body>
-<header>
+<div class="top"><header>
   <b>Physical-Edge Native</b>
-  <nav><a href="#idea">Idea</a><a href="#projects">Projects</a><a href="https://github.com/physical-edge-native">GitHub</a></nav>
-</header>
+  <nav>
+    <a href="#idea">Idea</a><a href="#assumptions">Assumptions</a><a href="#computable">Computable</a>
+    <a href="#principles">Principles</a><a href="#limits">Limits</a><a href="#stage">Where we are</a>
+    <a href="#related">Related</a><a href="https://github.com/physical-edge-native">GitHub</a>
+  </nav>
+</header></div>
 <main>
   <section class="hero">
-    <h1>Small computers in a room, computing its physics together.</h1>
-    <p>Physical-Edge Native Architecture (PENA) is an approach for a time when many small computers sit inside
-    physical spaces. Each one senses and computes its own part of the space and talks only with its neighbours;
-    together they keep a live model of the space. A larger computer joins only when a longer forecast is needed.</p>
+    <p class="eyebrow">Physical-Edge Native Architecture (PENA)</p>
+    <h1>Making a physical space computable by the many small devices already in it.</h1>
+    <p class="lead">Sensors and microcontrollers are spreading through buildings, machines and robots. PENA studies how
+    such devices — cheap, heterogeneous, owned by different parties — can cooperate <em>only with their neighbours</em>
+    to sense, simulate and predict the physics of the space they share, while large central models keep doing what they
+    are good at: global reasoning.</p>
     <div class="btns">
-      <a class="btn primary" href="https://physical-edge-native.github.io/dyne/">Dyne documentation</a>
+      <a class="btn primary" href="#stage">What runs today</a>
+      <a class="btn" href="https://physical-edge-native.github.io/dyne/">Dyne documentation</a>
       <a class="btn" href="https://github.com/physical-edge-native/dyne">Source on GitHub</a>
     </div>
     <div class="pair">
-      <div><img src="img/real.jpg" alt="A 4.0 m by 2.6 m room with six small devices along the walls"><p class="cap">A real room with six devices (hardware run, 2026-11-21).</p></div>
-      <div><img src="img/twin.jpg" alt="The room shape computed by the six devices, shown in a 3D dashboard"><p class="cap">The room shape the devices computed. The floor colour is a dummy temperature field.</p></div>
+      <div><img src="img/real.jpg" alt="A 4.0 m by 2.6 m room with six small devices on boxes along the walls"><p class="cap">A real 4.0 m × 2.6 m room with six devices, each with a distance sensor on a pan servo (hardware run, 2026-11-21).</p></div>
+      <div><img src="img/twin.jpg" alt="The room shape computed by the six devices, shown in a 3D dashboard"><p class="cap">The room shape the six devices computed together, each device computing its own region. The floor colour is a dummy temperature field, not a measurement.</p></div>
     </div>
   </section>
 
   <section id="idea">
-    <h2>The idea</h2>
-    <div class="grid">
-      <div class="card"><h3>Split the space</h3><p>Each device owns one part of the space and exchanges only the values on the shared edges with its neighbours.</p></div>
-      <div class="card"><h3>Check it bit for bit</h3><p>A split computation must match the same model solved on one computer exactly. This is how every result is tested.</p></div>
-      <div class="card"><h3>Hand it to other tools</h3><p>The live model is exported to robot simulators (USD for Isaac Sim) and to detailed solvers (ParaView, OpenFOAM).</p></div>
+    <h2><span class="num">1 · The idea</span>Split the physics of a space among the devices in it</h2>
+    <p class="intro">The space is divided into regions. The device placed in a region senses it and computes its physics;
+    neighbouring devices exchange only the values on their shared border, once per step. Together they form one simulation
+    of the whole space — a digital twin that lives on the devices, not on a server.</p>
+    <svg class="diagram" viewBox="0 0 1000 330" role="img" aria-label="Six regions in a 3 by 2 grid, each with a device and a sensor; arrows between neighbouring devices; a PC outside configures, monitors and exports">
+      <g>
+        <rect class="region" x="10" y="10" width="200" height="140" rx="8"/><rect class="region" x="220" y="10" width="200" height="140" rx="8"/><rect class="region" x="430" y="10" width="200" height="140" rx="8"/>
+        <rect class="region" x="10" y="160" width="200" height="140" rx="8"/><rect class="region" x="220" y="160" width="200" height="140" rx="8"/><rect class="region" x="430" y="160" width="200" height="140" rx="8"/>
+      </g>
+      <g>
+        <line class="link" x1="160" y1="80" x2="270" y2="80"/><line class="link" x1="370" y1="80" x2="480" y2="80"/>
+        <line class="link" x1="160" y1="230" x2="270" y2="230"/><line class="link" x1="370" y1="230" x2="480" y2="230"/>
+        <line class="link" x1="110" y1="100" x2="110" y2="210"/><line class="link" x1="320" y1="100" x2="320" y2="210"/><line class="link" x1="530" y1="100" x2="530" y2="210"/>
+      </g>
+      <g>
+        <rect class="dev" x="60" y="60" width="100" height="40" rx="5"/><text class="devt" x="110" y="85" text-anchor="middle">device</text>
+        <rect class="dev" x="270" y="60" width="100" height="40" rx="5"/><text class="devt" x="320" y="85" text-anchor="middle">device</text>
+        <rect class="dev" x="480" y="60" width="100" height="40" rx="5"/><text class="devt" x="530" y="85" text-anchor="middle">device</text>
+        <rect class="dev" x="60" y="210" width="100" height="40" rx="5"/><text class="devt" x="110" y="235" text-anchor="middle">device</text>
+        <rect class="dev" x="270" y="210" width="100" height="40" rx="5"/><text class="devt" x="320" y="235" text-anchor="middle">device</text>
+        <rect class="dev" x="480" y="210" width="100" height="40" rx="5"/><text class="devt" x="530" y="235" text-anchor="middle">device</text>
+        <circle class="sensor" cx="185" cy="32" r="8"/><circle class="sensor" cx="395" cy="32" r="8"/><circle class="sensor" cx="605" cy="32" r="8"/>
+        <circle class="sensor" cx="185" cy="182" r="8"/><circle class="sensor" cx="395" cy="182" r="8"/><circle class="sensor" cx="605" cy="182" r="8"/>
+      </g>
+      <g>
+        <rect x="670" y="22" width="22" height="18" rx="3" class="dev"/><text class="lab" x="704" y="37">a small device computes its own region</text>
+        <circle class="sensor" cx="681" cy="72" r="8"/><text class="lab" x="704" y="77">sensors feed the computation where they are</text>
+        <line class="link" x1="670" y1="112" x2="692" y2="112"/><text class="lab" x="704" y="117">neighbours exchange border values only</text>
+        <rect class="pc" x="670" y="170" width="310" height="120" rx="8"/>
+        <text class="lab" x="690" y="200" font-weight="600">PC (optional, outside the loop)</text>
+        <text class="muted" x="690" y="225">configures, monitors, exports (USD, VTK,</text>
+        <text class="muted" x="690" y="245">OpenFOAM); joins only to compute a</text>
+        <text class="muted" x="690" y="265">forecast, then leaves</text>
+      </g>
+    </svg>
+  </section>
+
+  <section id="assumptions">
+    <h2><span class="num">2 · Why</span>The hypotheses behind it</h2>
+    <p class="intro">The architecture is a proposal for a future in which the following hold. They are stated openly so that
+    each can be questioned.</p>
+    <div class="card"><h3 style="color:var(--accent);text-transform:uppercase;letter-spacing:.04em;font-size:16px">Assumptions about the world</h3>
+        <ol class="clean cols2">
+          <li><b>Devices of different owners share a space.</b> The heating maker's sensors, the lighting system and the
+          occupants' own gadgets sit in the same room. No single party can collect everyone's raw data — so the
+          architecture does not assume that all data goes to one centre.</li>
+          <li><b>Small computers become cheap enough</b> to be placed throughout a space, on batteries or harvested energy.</li>
+          <li><b>Many fields of interest are governed by coupling between neighbouring points</b> (heat, air quality, slow airflow, waves).</li>
+          <li><b>Sending data over radio tends to cost more than computing locally.</b></li>
+          <li><b>Global reasoning stays with large central models.</b> The centre does not disappear.</li>
+        </ol></div>
+    <div class="flow">
+      <div class="card"><h3>What we expect to follow</h3>
+        <p>Devices will split the physics of their space among themselves, each computing its own region and
+        communicating only with its neighbours.</p></div>
+      <div class="arrow">→</div>
+      <div class="card"><h3>What that requires</h3>
+        <p>When classical numerical solvers and small learned models from different makers are coupled across devices,
+        and devices join or leave while running, the coupled computation must stay stable (not diverge) and its error
+        must stay within a known bound.</p></div>
     </div>
-    <div class="wide"><img src="img/go2.jpg" alt="A quadruped robot walking in the room exported from the devices, in Isaac Sim"><p class="cap">The room computed by the devices, exported as USD: a Unitree Go2 walks in it in Isaac Sim (pretrained policy).</p></div>
+    <div class="question"><b>The research question:</b> can that be guaranteed — and checked — on real device swarms?</div>
+  </section>
+
+  <section id="computable">
+    <h2><span class="num">3 · Definition</span>What “computable” means here</h2>
+    <p class="intro">The computation is shaped like the space it describes. Four properties follow from the principles in the next section.</p>
+    <div class="grid">
+      <div class="card"><h3><span class="n">1</span>Shaped like the space</h3><p>The space is split into regions, each with its own small solver (classical or learned). Regions exchange only the values at their shared borders.</p></div>
+      <div class="card"><h3><span class="n">2</span>Runs anywhere</h3><p>The same regional solver runs on a small device placed inside its region or on a PC, with identical results.</p></div>
+      <div class="card"><h3><span class="n">3</span>Verifiable</h3><p>A solution split over many regions matches the single-solver solution bit for bit, and stability conditions at the borders can be checked when solvers of different kinds are mixed.</p></div>
+      <div class="card"><h3><span class="n">4</span>Reconfigurable while running</h3><p>Regions can join, leave or change size without stopping the computation.</p></div>
+    </div>
+  </section>
+
+  <section id="principles">
+    <h2><span class="num">4 · Principles</span>How the architecture is built</h2>
+    <div class="grid">
+      <div class="card"><h3><span class="n">1</span>Computation is placed where the physics is</h3><p>The device that measures a region computes that region, and devices communicate only with their neighbours.</p></div>
+      <div class="card"><h3><span class="n">2</span>Components meet only through contracts at their borders</h3><p>Components that differ in maker, owner and kind — classical solvers, learned models, and in future physical or quantum devices — connect only through what is agreed at their shared borders: what is exchanged, the stability condition, the error bound, and how it is checked. Components are isolated: one hosted on another owner's device reaches nothing beyond its contract (in Dyne, solvers run as WebAssembly, which cannot touch memory outside its own or call anything it has not been granted).</p></div>
+      <div class="card"><h3><span class="n">3</span>Keeping those contracts is checkable</h3><p>Where components are digital and deterministic, the check is bit-for-bit equality; where they are not, it is an error bound.</p></div>
+      <div class="card"><h3><span class="n">4</span>The centre does not disappear</h3><p>Raw sensor data never goes to the centre. Normally a summary of the state does; when a forecast faster than real time is needed, the state the devices have already fitted to their measurements is handed over with identical bits, so that a central computer can join temporarily, compute ahead with the same solvers, and leave again.</p></div>
+    </div>
+  </section>
+
+  <section id="limits">
+    <h2><span class="num">5 · Limits</span>Limits we state up front</h2>
+    <div class="grid">
+      <div class="card limit"><h3>A speed limit set by the network</h3><p>With neighbour-only exchange, information crosses one region per exchange. To follow a field in real time, region size ÷ exchange delay must exceed the speed at which the physics propagates — a CFL-like condition on the network. With today's radio delays this rules out real-time tracking of fast phenomena such as sound, and leaves slow fields (indoor heat, CO2, humidity). Slow fields can often be computed by a single device; the value of many devices lies in sensing spread through the field, not in raw compute.</p></div>
+      <div class="card limit"><h3>Bit-exact under message loss, at the cost of delay</h3><p>Results stay identical to the single-solver solution because devices wait for missing messages; loss therefore turns into delay. On hardware, dropping 30 % of received messages on purpose kept the result bit-exact and roughly doubled the run time.</p></div>
+      <div class="card limit"><h3>Honest devices only, for now</h3><p>Current guarantees assume that every device is honest and only faults occur (message loss, delay, devices leaving). Trust between devices of different owners — authentication, rejecting implausible border values, tolerance of malicious devices — is future work.</p></div>
+      <div class="card limit"><h3>No claim of superiority</h3><p>No claim is made over centralised or GPU-based setups. This is groundwork for a time when edge computing is woven into physical spaces.</p></div>
+    </div>
+  </section>
+
+  <section id="stage">
+    <h2><span class="num">6 · Where we are</span>Research prototype, first room-scale hardware run</h2>
+    <p class="intro">Status as of 2026-11-21. Each item is marked by where it has been shown: <span class="tag hw">hardware</span>
+    on ESP32 devices, <span class="tag sim">simulator</span> in the deterministic simulator (anyone can rerun it without hardware), or
+    <span class="tag next">next</span> for work in progress.</p>
+    <div class="tablewrap"><table>
+      <tr><th>What</th><th>Result</th><th>Shown on</th></tr>
+      <tr><td>2D wave equation split over 4, 8 and 16 devices</td><td>Every device's part matches the single-solver solution bit for bit (81 × 81 grid, 400 steps), also with 30 % of messages dropped</td><td><span class="tag hw">hardware</span></td></tr>
+      <tr><td>Room shape computed by six devices with pan-servo distance sensors</td><td>Walls within 49 mm on average (no calibration yet; 7.7 mm in the simulator with the same placement); 83 % of visible surfaces recovered</td><td><span class="tag hw">hardware</span></td></tr>
+      <tr><td>A device leaving and rejoining</td><td>Neighbours detect the silence within about 10 s and hold; the run resumes when the device returns</td><td><span class="tag hw">hardware</span></td></tr>
+      <tr><td>Seven accelerometers fused on one board</td><td>Static noise about 2.2 × lower than one device (√7 ≈ 2.6 expected)</td><td><span class="tag hw">hardware</span></td></tr>
+      <tr><td>Twin → robot simulator</td><td>The room computed on the devices is exported as USD; a Unitree Go2 walks in it in Isaac Sim with a pretrained policy</td><td><span class="tag hw">hardware</span> + Isaac Sim</td></tr>
+      <tr><td>Twin → CFD</td><td>The same room becomes an OpenFOAM mesh (912 cells) and runs <code>scalarTransportFoam</code> (initial temperatures are dummy values)</td><td><span class="tag hw">hardware</span> + OpenFOAM</td></tr>
+      <tr><td>Device replacement and joining while running; mixing classical and learned solvers</td><td>Bit-exact against the single-solver solution under loss, delay, pauses and partitions</td><td><span class="tag sim">simulator</span></td></tr>
+      <tr><td>Stability guarantees</td><td>Proven: heat-equation scheme and sensor nudging never increase the maximum error under stated conditions; wave scheme stable for Courant number ≤ 1/√2. Derived under idealisation: bounds when classical and learned solvers are mixed. Open: matching the mixed-solver predictions on hardware</td><td><span class="tag sim">theory + simulator</span></td></tr>
+      <tr><td>Training robots inside the twin of any room; twin that follows furniture moving; forecasts handed to a central computer with identical bits</td><td>In progress toward the MITOU final report</td><td><span class="tag next">next</span></td></tr>
+    </table></div>
+    <h3>Timeline</h3>
+    <ul class="timeline">
+      <li><b>2026-07</b> Architecture and goals presented in the IPA MITOU IT program.</li>
+      <li><b>2026-08</b> Two ESP32 devices over Wi-Fi match the single-device solution bit for bit; 16 devices in the deterministic simulator.</li>
+      <li><b>2026-09–11</b> Stability theory for coupled classical and learned solvers; border conditions for unobserved sides; time sync and over-the-air updates for device swarms.</li>
+      <li><b>2026-11-15</b> Dyne released as open source (MIT OR Apache-2.0), with CI on Linux, macOS and Windows.</li>
+      <li><b>2026-11-21</b> First room-scale hardware run: 16 devices, room twin exported to Isaac Sim and OpenFOAM.</li>
+      <li class="future"><b>Next</b> A twin of a home room that follows changes; robot learning inside the twin.</li>
+      <li class="future"><b>2027-05+</b> Submission of Dyne to the Journal of Open Source Software (JOSS).</li>
+    </ul>
+    <div class="wide"><img src="img/go2.jpg" alt="A quadruped robot walking in the room exported from the devices, in Isaac Sim"><p class="cap">The room computed by the six devices, exported as USD: a Unitree Go2 walks in it in Isaac Sim (pretrained locomotion policy, inference only).</p></div>
   </section>
 
   <section id="projects">
-    <h2>Projects</h2>
+    <h2><span class="num">7 · Repositories</span>Software</h2>
+    <div class="tablewrap"><table>
+      <tr><th>Repository</th><th>Role</th><th>Status</th></tr>
+      <tr><td><a href="https://github.com/physical-edge-native/dyne">dyne</a> · <a href="https://physical-edge-native.github.io/dyne/">docs</a></td><td>Toolchain: deploys physical models as WebAssembly to microcontrollers, keeps them fitted to sensor data, and verifies results bit for bit against a deterministic simulator; includes native solvers for PCs (reference solutions, fast simulation of many devices) and exports to USD, VTK and OpenFOAM</td><td>research prototype</td></tr>
+      <tr><td><a href="https://github.com/physical-edge-native/barye">barye</a></td><td>Former CPU-side simulation environment, merged into dyne in 2026-11</td><td>archived</td></tr>
+    </table></div>
+  </section>
+
+  <section id="related">
+    <h2><span class="num">8 · Related approaches</span>What exists, and what this adds</h2>
     <div class="grid">
-      <div class="card"><h3><a href="https://github.com/physical-edge-native/dyne">Dyne</a></h3><p>Runs numerical solvers and small neural networks split over microcontrollers, with a deterministic simulator so everything can be tried without hardware. MIT OR Apache-2.0.</p></div>
+      <div class="card"><h3>Amorphous, spatial and aggregate computing</h3><p>(e.g. field calculus) program many locally communicating devices placed in space. They mostly target coordination (gradients, consensus, routing) with self-stabilisation guarantees; numerical accuracy and stability of physical solvers are not their focus.</p></div>
+      <div class="card"><h3>Distributed estimation of physical fields</h3><p>(e.g. distributed Kalman filters for fields governed by partial differential equations) shares the region-by-region structure; it is mostly studied in theory and simulation rather than on device swarms.</p></div>
+      <div class="card"><h3>Domain decomposition in CFD and numerical libraries</h3><p>(e.g. OpenFOAM, PETSc) splits the domain the same way, but as one tightly coupled computation on a cluster. Placing regions on devices inside the space and reconfiguring them while running are outside their scope. Dyne exports its state <em>to</em> such tools rather than competing with them.</p></div>
+      <div class="card"><h3>Robot simulators</h3><p>(e.g. Isaac Lab, MuJoCo) focus on rigid bodies, contact, robots and rendering; field physics is largely outside their scope. Dyne hands them the shape of the real room.</p></div>
+      <div class="card"><h3>Physical reservoir computing</h3><p>lets a physical medium itself perform a computation for a given task. It answers a different question: it does not produce a model of the space's state that can be inspected, verified or used for what-if predictions.</p></div>
+      <div class="card"><h3>What this project studies</h3><p>The individual elements all have prior work. What PENA studies is their combination on real device swarms, with numerical guarantees.</p></div>
     </div>
   </section>
 </main>
-<footer>Physical-Edge Native · Content under the licences of each project · Cite Dyne with DOI <a href="https://doi.org/10.5281/zenodo.24241009">10.5281/zenodo.24241009</a></footer>
+<footer>Physical-Edge Native · Supported by the IPA MITOU IT program (FY2026) · Code under the licences of each repository · Cite Dyne with DOI <a href="https://doi.org/10.5281/zenodo.24241009">10.5281/zenodo.24241009</a></footer>
 </body>
 </html>
