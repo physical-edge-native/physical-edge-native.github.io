@@ -232,9 +232,12 @@ footer{border-top:1px solid var(--line);margin-top:72px;padding-top:20px;padding
   <section id="projects">
     <h2><span class="num">7 · Repositories</span>Software</h2>
     <div class="tablewrap"><table>
-      <tr><th>Repository</th><th>Role</th><th>Status</th></tr>
-      <tr><td><a href="https://github.com/physical-edge-native/dyne">dyne</a> · <a href="https://physical-edge-native.github.io/dyne/">docs</a></td><td>Toolchain: deploys physical models as WebAssembly to microcontrollers, keeps them fitted to sensor data, and verifies results bit for bit against a deterministic simulator; includes native solvers for PCs (reference solutions, fast simulation of many devices) and exports to USD, VTK and OpenFOAM</td><td>research prototype</td></tr>
-      <tr><td><a href="https://github.com/physical-edge-native/barye">barye</a></td><td>Former CPU-side simulation environment, merged into dyne in 2026-11</td><td>archived</td></tr>
+      <tr><th>Repository</th><th>The question it answers</th><th>Status</th></tr>
+      <tr><td><a href="https://github.com/physical-edge-native/dyne">dyne</a> · <a href="https://physical-edge-native.github.io/dyne/">docs</a></td><td>Can a physical model be split across many small devices, kept bit-exact with a single computer through loss, delay, joining and leaving, and fed by local sensors?</td><td>research prototype, v0.1.0 (DOI <a href="https://doi.org/10.5281/zenodo.24241009">10.5281/zenodo.24241009</a>)</td></tr>
+      <tr><td><a href="https://github.com/physical-edge-native/erg">erg</a></td><td>On the same cheap four-legged robot without vision, how does control split over the legs (neighbour-only exchange) differ from one central policy?</td><td>early: design records (scope, robot and comparison, expected differences), first MJCF model with a 10 s standing test, Dyne submodule with a bit-exact check, CI</td></tr>
+      <tr><td><a href="https://github.com/physical-edge-native/gauss">gauss</a></td><td>The same comparison as a pure question of model architecture, at the size of industrial robots</td><td>just started: README only</td></tr>
+      <tr><td><a href="https://github.com/physical-edge-native/poise">poise</a></td><td>Can a soft robot body be used as part of the computation (physical reservoir computing) for control?</td><td>just started: README only</td></tr>
+      <tr><td><a href="https://github.com/physical-edge-native/barye">barye</a></td><td>(merged into dyne on 2026-11-16)</td><td>archived</td></tr>
     </table></div>
   </section>
 
