@@ -3,6 +3,8 @@
 - 組織 physical-edge-native のリポジトリに共通する約束ごと（交換形式・計算部品の約束事・モデルのファイル形式・
   固定しているコミット・ライセンス・用語・リポジトリをまたぐ決定・ウェブサイトのリポジトリの表）の**正本は
   [pena-meta](https://github.com/physical-edge-native/pena-meta)**。作業の前に `contracts.md` と `decisions/` を読む。
+- **用語の正本**（2026-11-28 決定）：複数のリポジトリで使う用語は pena-meta の `glossary.md` が正本。そのリポジトリだけで使う用語は、
+  そのリポジトリの用語集が正本。pena-meta の用語と同じ言葉を使うなら同じ意味で使い、違う意味なら別の言葉にする。
 - このリポジトリの記述が pena-meta と食い違うのを見つけたら、**勝手に直さず**、ユーザーに報告し、
   pena-meta に「Cross-repository proposal」の issue の文案を作る。
 - ほかのリポジトリに影響する変更（共通の部品・交換形式・ファイル形式・公開の主張）は、**先に pena-meta に提案**し、
